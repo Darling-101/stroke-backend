@@ -72,9 +72,11 @@ Router.post("/login", async (req, res) => {
         { userId: existUser._id },
         process.env.ACCESS_TOKEN_SECRET
       );
+      const {password, ...user} = existUser._doc;
+
       return res
         .status(200)
-        .json({ success: true, message: "Đăng nhập thành công", data: {accessToken} });
+        .json({ success: true, message: "Đăng nhập thành công", data: {accessToken, user} });
     } else {
       return res
         .status(400)
