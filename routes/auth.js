@@ -90,16 +90,5 @@ Router.post("/login", async (req, res) => {
   }
 });
 
-Router.get("/test", async (req, res)=>{
-  let p = false;
-
-  try{
-    const user = await UserSchema.findById('6311a62eef70ee03a976ef6b');
-
-    return res.status(200).json({success: p, data:user})
-  }catch(err){
-    console.log(err);
-  }
-})
 
 module.exports = Router;

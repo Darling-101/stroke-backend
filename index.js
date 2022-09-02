@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoute = require('./routes/auth');
+const sosRoute = require('./routes/sos')
 
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ mongoose
     console.log(err);
   });
 
+app.use("/api/v1/sos", sosRoute);
 app.use("/api/v1/auth", authRoute);
 
 app.listen(process.env.PORT || 5000, () => {
