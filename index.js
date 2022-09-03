@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoute = require('./routes/auth');
 const sosRoute = require('./routes/sos')
-
+const userRoute = require('./routes/user')
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -20,6 +20,7 @@ mongoose
     console.log(err);
   });
 
+app.use("/api/v1/user", userRoute);
 app.use("/api/v1/sos", sosRoute);
 app.use("/api/v1/auth", authRoute);
 
