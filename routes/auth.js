@@ -4,6 +4,8 @@ const UserSchema = require("../model/user");
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const verifyToken = require("../middleware/auth");
+
 dotenv.config();
 
 //Dang ki POST
@@ -48,6 +50,18 @@ Router.post("/register", async (req, res) => {
   }
 });
 
+Router.get("/get-user", verifyToken, async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    const existUser = await UserSchema.findById(userId);
+    const { password, ...user } = existUser._doc;
+    return res.status(200).json({ success: true, user: user });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 Router.post("/login", async (req, res) => {
   const user = req.body;
   if (!user.phone || !user.password) {
@@ -72,11 +86,15 @@ Router.post("/login", async (req, res) => {
         { userId: existUser._id },
         process.env.ACCESS_TOKEN_SECRET
       );
-      const {password, ...user} = existUser._doc;
+      const { password, ...user } = existUser._doc;
 
       return res
         .status(200)
-        .json({ success: true, message: "Đăng nhập thành công", data: {accessToken, user} });
+        .json({
+          success: true,
+          message: "Đăng nhập thành công",
+          data: { accessToken, user },
+        });
     } else {
       return res
         .status(400)
@@ -89,6 +107,5 @@ Router.post("/login", async (req, res) => {
       .json({ success: false, message: "Đăng nhập không thành công" });
   }
 });
-
 
 module.exports = Router;
