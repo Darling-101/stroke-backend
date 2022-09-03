@@ -37,6 +37,7 @@ Router.post("/add-phone", verifyToken, async (req, res) => {
 
 Router.post("/change-sos-status",verifyToken, async (req, res) =>{
   const userId = req.userId;
+  const poi = req.body.curPoisition
 
   try{
     const nguoi_benh = await UserSchema.findById(userId);
@@ -44,7 +45,7 @@ Router.post("/change-sos-status",verifyToken, async (req, res) =>{
       return res.status(400).json({success: false, message: "Không tồn tại người nài"})
     }
 
-    await UserSchema.findByIdAndUpdate(userId, {SOS: true})
+    await UserSchema.findByIdAndUpdate(userId, {SOS: true,position: poi })
     res.status(200).json({success: true, message: "Đổi trạng thái thành công"})
   }catch(err){
     return res.status(400).json({success: false, message: "Cập nhật thất bại"})
