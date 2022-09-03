@@ -46,7 +46,20 @@ Router.post("/change-sos-status",verifyToken, async (req, res) =>{
     }
 
     await UserSchema.findByIdAndUpdate(userId, {SOS: true,position: poi })
-    res.status(200).json({success: true, message: "Đổi trạng thái thành công"})
+    return res.status(200).json({success: true, message: "Đổi trạng thái thành công"})
+  }catch(err){
+    return res.status(400).json({success: false, message: "Cập nhật thất bại"})
+  }
+})
+
+Router.get("/get-sos-status",verifyToken, async (req, res) =>{
+  const userId = req.userId;
+
+  try{
+    const user = await UserSchema.findById(userId);
+    const nguoi_than_id = user.RelationshipId;
+    const nguoi_than = await UserSchema.findById(nguoi_than_id);
+    return res.status(200).json({success: true, message: "Đổi trạng thái thành công", SOS: nguoi_than.SOS})
   }catch(err){
     return res.status(400).json({success: false, message: "Cập nhật thất bại"})
   }
