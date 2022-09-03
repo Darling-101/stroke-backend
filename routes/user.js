@@ -13,7 +13,7 @@ Router.get("/get-relationships", verifyToken, async (req, res) => {
       return res.status(400).json({success: false, message: "Không có người thân nào"})
     }
 
-    const nguoi_than = await UserSchema.find({_id: {$in: nguoi_than_id}});
+    let nguoi_than = await UserSchema.find({_id: {$in: nguoi_than_id}});
     return res
       .status(200)
       .json({

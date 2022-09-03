@@ -73,7 +73,15 @@ Router.get("/get-sos-status", verifyToken, async (req, res) => {
       return res.status(400).json({success: false, message: "Không có người thân nào"})
     }
 
-    const nguoi_than = await UserSchema.find({_id: {$in: nguoi_than_id}});
+    let nguoi_than = await UserSchema.find({_id: {$in: nguoi_than_id}});
+
+    nguoi_than = nguoi_than.filter(e=>e.SOS=== true);
+
+    console.log(nguoi_than);
+    if(!nguoi_than){
+      return;
+    }
+    
     return res
       .status(200)
       .json({
