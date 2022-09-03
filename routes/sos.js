@@ -9,7 +9,7 @@ Router.post("/add-phone", verifyToken, async (req, res) => {
 
   try {
     const nguoi_than = await UserSchema.find({ phone: phoneNumber });
-    
+
     if (nguoi_than.length === 0) {
       return res
         .status(400)
@@ -17,16 +17,18 @@ Router.post("/add-phone", verifyToken, async (req, res) => {
     }
 
     const nguoi_them = await UserSchema.findById(userId);
-    
-    if(nguoi_them.RelationshipId.includes(nguoi_than[0]._id)){
+
+    if (nguoi_them.RelationshipId.includes(nguoi_than[0]._id)) {
       console.log("hh=ehe");
-      return res.status(400).json({success: false, message: "Đã có người này trong danh sách"})
+      return res
+        .status(400)
+        .json({ success: false, message: "Đã có người này trong danh sách" });
     }
 
     await UserSchema.findByIdAndUpdate(userId, {
-      $push:{RelationshipId: nguoi_than[0]._id},
+      $push: { RelationshipId: nguoi_than[0]._id },
     });
-    
+
     return res
       .status(200)
       .json({ success: true, message: "Thêm người thân thành công" });
@@ -35,34 +37,51 @@ Router.post("/add-phone", verifyToken, async (req, res) => {
   }
 });
 
-Router.post("/change-sos-status",verifyToken, async (req, res) =>{
+Router.post("/change-sos-status", verifyToken, async (req, res) => {
   const userId = req.userId;
-  const poi = req.body.curPoisition
+  const poi = req.body.curPoisition;
 
-  try{
+  try {
     const nguoi_benh = await UserSchema.findById(userId);
-    if(!nguoi_benh){
-      return res.status(400).json({success: false, message: "Không tồn tại người nài"})
+    if (!nguoi_benh) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Không tồn tại người nài" });
     }
 
-    await UserSchema.findByIdAndUpdate(userId, {SOS: true,position: poi })
-    return res.status(200).json({success: true, message: "Đổi trạng thái thành công"})
-  }catch(err){
-    return res.status(400).json({success: false, message: "Cập nhật thất bại"})
+    await UserSchema.findByIdAndUpdate(userId, {
+      SOS: !nguoi_benh.SOS,
+      position: poi,
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: "Đổi trạng thái thành công" });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Cập nhật thất bại" });
   }
-})
+});
 
-Router.get("/get-sos-status",verifyToken, async (req, res) =>{
+Router.get("/get-sos-status", verifyToken, async (req, res) => {
   const userId = req.userId;
 
-  try{
+  try {
     const user = await UserSchema.findById(userId);
     const nguoi_than_id = user.RelationshipId;
-    const nguoi_than = await UserSchema.findById(nguoi_than_id);
-    return res.status(200).json({success: true, message: "Đổi trạng thái thành công", SOS: nguoi_than.SOS})
-  }catch(err){
-    return res.status(400).json({success: false, message: "Cập nhật thất bại"})
+    const nguoi_than = await UserSchema.find({_id: {$in: nguoi_than_id}});
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "Đổi trạng thái thành công",
+        nguoi_than: nguoi_than
+      });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Cập nhật thất bại" });
   }
-})
+});
 
 module.exports = Router;
