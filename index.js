@@ -5,6 +5,8 @@ const dotenv = require("dotenv");
 const authRoute = require('./routes/auth');
 const sosRoute = require('./routes/sos')
 const userRoute = require('./routes/user')
+const conversationRoute = require('./routes/conversation')
+const messageRoute = require('./routes/message')
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -22,6 +24,8 @@ mongoose
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/sos", sosRoute);
+app.use("/api/v1/conversation", conversationRoute);
+app.use("/api/v1/message", messageRoute);
 app.use("/api/v1/auth", authRoute);
 
 app.listen(process.env.PORT || 5000, () => {
