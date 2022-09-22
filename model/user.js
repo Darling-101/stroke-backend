@@ -8,7 +8,8 @@ const UserSchema = new Schema({
   password: {type: String, require: true},
   position: {type: Array, default: []},
   RelationshipId: {type:Array, default: []},
-  SOS: {type: Boolean, default: false}
+  SOS: {type: Boolean, default: false},
+  role: {type: String, default: 'user'}
 })
 
 module.exports = mongoose.model("User", UserSchema);

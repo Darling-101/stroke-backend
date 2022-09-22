@@ -41,4 +41,19 @@ Router.post("/update", verifyToken, async (req, res) => {
   }
 });
 
+Router.post("/set-role", verifyToken, async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    await UserSchema.findByIdAndUpdate(userId, {role:'doctor'});
+    res.status(200).json({ success: true, message: "Cập nhật thành công" });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: "Cập nhật không thành công" });
+  }
+});
+
+
+
 module.exports = Router;
