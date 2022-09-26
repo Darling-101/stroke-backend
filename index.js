@@ -31,6 +31,7 @@ let users = [
 ];
 
 const addUser = (userId, socketId) => {
+  console.log(users);
   const newUser = {userId: userId, socketId: socketId}
   const isExist = users.some(user => user.userId === userId);
 
