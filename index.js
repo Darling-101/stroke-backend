@@ -23,19 +23,36 @@ mongoose
     console.log(err);
   });
 
-let users = [];
+let users = [
+  {
+    userId: "63142c4f038298556063cf0f",
+    socketId: "1UYxOkVNT6PHUoeXAAAB",
+  },
+];
 
 const addUser = (userId, socketId) => {
-  !users.some((user) => user.userId === userId) &&
-    users.push({ userId, socketId });
+  const newUser = {userId: userId, socketId: socketId}
+  const isExist = users.some(user => user.userId === userId);
+
+  //if user not exist
+  if(isExist === false){
+    users.push(newUser);
+    return;
+  }
+
+  //if user exist
+  for(let i = 0; i < users.length; i++){
+    if(users[i] === newUser){
+      users[i] = newUser;
+    }
+  }
+
 };
 
-const removeUser = (socketId) => {
-  users = users.filter((user) => user.socketId !== socketId);
-};
 
 const getUser = (userId) => {
-  return users.find((user) => user.userId === userId);
+  const user = users.filter((e) => e.userId === userId);
+  return user[0];
 };
 
 io.on("connection", (socket) => {
@@ -44,6 +61,7 @@ io.on("connection", (socket) => {
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
+    console.log("user after add:", users);
     io.emit("getUsers", users);
   });
 
@@ -59,7 +77,7 @@ io.on("connection", (socket) => {
   //when disconnect
   socket.on("disconnect", () => {
     console.log("a user disconnected!");
-    removeUser(socket.id);
+    //removeUser(socket.id);
     io.emit("getUsers", users);
   });
 });
