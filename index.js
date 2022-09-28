@@ -11,8 +11,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 dotenv.config();
-// const server = require("http").createServer(app);
-// const io = require("socket.io")(server);
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -23,71 +23,57 @@ mongoose
     console.log(err);
   });
 
-// let users = [
-//   {
-//     userId: "63142c4f038298556063cf0f",
-//     socketId: "1UYxOkVNT6PHUoeXAAAB",
-//   },
-// ];
+let users = [];
 
-// const addUser = (userId, socketId) => {
-//   console.log(users);
-//   const newUser = { userId: userId, socketId: socketId };
-//   const isExist = users.some((user) => user.userId === userId);
+const addUser = (userId, socketId) => {
+  //console.log(users);
+  const newUser = { userId: userId, socketId: socketId };
+  const isExist = users.some((user) => user.userId === userId);
 
-//   //if user not exist
-//   if (isExist === false) {
-//     users.push(newUser);
-//     return;
-//   }
+  //if user not exist
+  if (isExist === false) {
+    users.push(newUser);
+    return;
+  }
 
-//   //if user exist
-//   for (let i = 0; i < users.length; i++) {
-//     if (users[i] === newUser) {
-//       users[i] = newUser;
-//     }
-//   }
-// };
+  //if user exist
+  for (let i = 0; i < users.length; i++) {
+    if (users[i] === newUser) {
+      users[i] = newUser;
+    }
+  }
+};
 
-// const getUser = (userId) => {
-//   const user = users.filter((e) => e.userId === userId);
-//   return user[0];
-// };
+const getUser = (userId) => {
+  const user = users.filter((e) => e.userId === userId);
+  return user[0];
+};
 
-// io.on("connection", (socket) => {
-//   console.log("a user connected.");
+io.on("connection", (socket) => {
+  console.log("a user connected.");
 
-//   //take userId and socketId from user
-//   socket.on("addUser", (userId) => {
-//     addUser(userId, socket.id);
-//     //console.log("user after add:", users);
-//     //io.emit("getUsers", users);
-//   });
+  //take userId and socketId from user
+  socket.on("addUser", (userId) => {
+    addUser(userId, socket.id);
+    console.log("users after connect:", users);
+  });
 
-//   //send and get message
-//   // socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-//   //   const user = getUser(receiverId);
-//   //   io.emit("getMessage", {
-//   //     senderId,
-//   //     text,
-//   //   });
-//   // });
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    console.log(text);
+    const user = getUser(receiverId);
+    console.log(user);
+    io.to(user?.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
+  });
 
-//   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-//     const user = getUser(receiverId);
-//     io.to(user.socketId).emit("sendMessage", {
-//       senderId,
-//       text,
-//     });
-//   });
-
-//   //when disconnect
-//   socket.on("disconnect", () => {
-//     console.log("a user disconnected!");
-//     //removeUser(socket.id);
-//     //io.emit("getUsers", users);
-//   });
-// });
+  //when disconnect
+  socket.on("disconnect", () => {
+    console.log("a user disconnected!");
+    console.log("users after disconnect:", users);
+  });
+});
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/sos", sosRoute);
@@ -95,6 +81,6 @@ app.use("/api/v1/conversation", conversationRoute);
 app.use("/api/v1/message", messageRoute);
 app.use("/api/v1/auth", authRoute);
 
-app.listen(process.env.PORT || 5000, () => {
+server.listen(process.env.PORT || 5000, () => {
   console.log("sever is running at port ", process.env.PORT || 5000);
 });
