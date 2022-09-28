@@ -38,7 +38,7 @@ const addUser = (userId, socketId) => {
 
   //if user exist
   for (let i = 0; i < users.length; i++) {
-    if (users[i] === newUser) {
+    if (users[i].userId === newUser.userId) {
       users[i] = newUser;
     }
   }
