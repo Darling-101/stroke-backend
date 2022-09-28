@@ -45,7 +45,7 @@ Router.post("/set-role", verifyToken, async (req, res) => {
   const userId = req.userId;
 
   try {
-    await UserSchema.findByIdAndUpdate(userId, {role:'doctor'});
+    await UserSchema.findByIdAndUpdate(userId, { role: "doctor" });
     res.status(200).json({ success: true, message: "Cập nhật thành công" });
   } catch (err) {
     res
@@ -54,6 +54,23 @@ Router.post("/set-role", verifyToken, async (req, res) => {
   }
 });
 
-
+Router.get("/health-info", verifyToken, async (req, res) => {
+  const userId = req.userId;
+  try {
+    const user = await UserSchema.findById(userId);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Không tìm thấy người này" });
+    }
+    const { height, weight, heartSpeed, ...data } = user;
+    const _res = { height, weight, heartSpeed };
+    res.status(200).json({ success: true, data: _res });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Không tìm thấy người này" });
+  }
+});
 
 module.exports = Router;
