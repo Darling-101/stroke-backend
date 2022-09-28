@@ -64,8 +64,8 @@ io.on("connection", (socket) => {
     if(!user){
       return;
     }
-    console.log(user);
-    io.to(user?.socketId).emit("getMessage", {
+    console.log(user?.socketId);
+    io.to(`${user?.socketId}`).emit("getMessage", {
       senderId,
       text,
     });
