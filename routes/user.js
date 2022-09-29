@@ -73,4 +73,23 @@ Router.get("/health-info", verifyToken, async (req, res) => {
   }
 });
 
+Router.get('/doctors', async (req, res)=>{
+  try{  
+    let doctors = await UserSchema.find({role:'doctor'});
+    if(doctors.length === 0){
+      return res.status(200).json({success: true, message: "Chưa có ai làm bác sĩ cả!!"})
+    }
+
+    doctors = doctors.map(doctor =>{
+      const {password, ...data} = doctor._doc;
+      return data
+    })
+
+    return res.status(200).json({success: false, data: doctors})
+  }catch(err){
+    console.log(err);
+    return res.status(200).json({success: false, message: "Chưa có ai làm bác sĩ cả!!"})
+  }
+})
+
 module.exports = Router;
