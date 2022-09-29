@@ -13,9 +13,9 @@ const UserSchema = new Schema({
   role: { type: String, default: "user" },
   weight: { type: Number, default:0 },
   height: { type: Number, default: 0 },
-  heartSpeed: { type: Number },
-  tamThu: {type:Number},
-  tamTuong: {type: Number}
+  heartSpeed: { type: Number, default:0 },
+  tamThu: {type:Number, default:0 },
+  tamTuong: {type: Number, default:0 }
 },{timestamps:true});
 
 module.exports = mongoose.model("User", UserSchema);
