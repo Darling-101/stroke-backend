@@ -11,7 +11,7 @@ Router.post('/', async (req, res)=>{
 
   try{
     const saved = await newConversation.save();
-    return res.status(200).json({success: true})
+    return res.status(200).json({success: true, conservationId: saved._id})
   }catch(err){
     console.log(err);
      return res.status(500).json({success: false, Error: err})
