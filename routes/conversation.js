@@ -12,6 +12,12 @@ Router.post('/', async (req, res)=>{
   })
 
   try{
+    const existed = await ConversationSchema.find({members: [req.body.senderId, req.body.receiverId]})
+    if(existed){
+      return res.status(200).json({success: true, conversationId: existed[0]._id})
+    }
+
+
     const saved = await newConversation.save();
     return res.status(200).json({success: true, conversationId: saved._id})
   }catch(err){
