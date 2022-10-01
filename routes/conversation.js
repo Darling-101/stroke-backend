@@ -2,6 +2,8 @@ const express = require("express");
 const Router = express.Router();
 const ConversationSchema = require("../model/Conversation");
 const verifyToken = require("../middleware/auth");
+const UserSchema = require("../model/user");
+
 
 //create conversation
 Router.post('/', async (req, res)=>{
@@ -27,8 +29,22 @@ Router.get('/',verifyToken, async (req, res)=>{
     const conversation = await ConversationSchema.find({
       members: {$in:[userId]}
     })
+
+    const members = conversation.map((e)=> e.members);
+
+    receiverId = members.map(e=>{
+      for(let i = 0 ; i < 2; i++){
+        if(e[i] !== userId){
+          return e[i];
+        }
+      }
+    })
+
+    const sender = await UserSchema.find({
+      _id:{$in:receiverId}
+    })
    
-    return res.status(200).json({success: true, data: conversation})
+    return res.status(200).json({success: true, data: conversation, sender})
   }catch(err){
     console.log(err);
     return res.status(500).json({success: false, Error: err})
