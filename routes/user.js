@@ -73,9 +73,11 @@ Router.get("/health-info", verifyToken, async (req, res) => {
   }
 });
 
-Router.get('/doctors', async (req, res)=>{
+//Lay danh sach bac si theo benh vien
+Router.post('/doctors', async (req, res)=>{
+  const hospitalName = req.body?.hospitalName;
   try{  
-    let doctors = await UserSchema.find({role:'doctor'});
+    let doctors = await UserSchema.find({role:'doctor', workPlace:hospitalName });
     if(doctors.length === 0){
       return res.status(200).json({success: true, message: "Chưa có ai làm bác sĩ cả!!"})
     }

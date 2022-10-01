@@ -15,7 +15,8 @@ const UserSchema = new Schema({
   height: { type: Number, default: 0 },
   heartSpeed: { type: Number, default:0 },
   tamThu: {type:Number, default:0 },
-  tamTuong: {type: Number, default:0 }
+  tamTuong: {type: Number, default:0 },
+  workPlace: {type:String, default: ''}
 },{timestamps:true});
 
 module.exports = mongoose.model("User", UserSchema);
