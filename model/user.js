@@ -21,7 +21,10 @@ const UserSchema = new Schema(
     daily: {
       type: Object,
       default: {
-        smoking: 0,
+        smoking: {
+          isSmoking: false,
+          amount: 0
+        },
         blood_sugar: 0,
         blood_pressure: 0,
         sleepingTime: 0,

@@ -32,8 +32,8 @@ Router.post("/update", verifyToken, async (req, res) => {
   const userId = req.userId;
 
   try {
-    await UserSchema.findByIdAndUpdate(userId, data);
-    res.status(200).json({ success: true, message: "Cập nhật thành công" });
+    const updated = await UserSchema.findByIdAndUpdate(userId, data);
+    res.status(200).json({ success: true, message: "Cập nhật thành công", data: updated });
   } catch (err) {
     res
       .status(400)
