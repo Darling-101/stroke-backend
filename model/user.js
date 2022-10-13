@@ -32,7 +32,8 @@ const UserSchema = new Schema(
         chucNangThiGiac: "",
       },
     },
-    onesignalId: {type: String, default: ""}
+    onesignalId: {type: String, default: ""},
+    onesignalIdRelationship: {type: Array, default:[]}
   },
   { timestamps: true }
 );

@@ -19,7 +19,6 @@ Router.post("/add-phone", verifyToken, async (req, res) => {
     const nguoi_them = await UserSchema.findById(userId);
 
     if (nguoi_them.RelationshipId.includes(nguoi_than[0]._id)) {
-      console.log("hh=ehe");
       return res
         .status(400)
         .json({ success: false, message: "Đã có người này trong danh sách" });
@@ -27,6 +26,10 @@ Router.post("/add-phone", verifyToken, async (req, res) => {
 
     await UserSchema.findByIdAndUpdate(userId, {
       $push: { RelationshipId: nguoi_than[0]._id },
+    });
+
+    await UserSchema.findByIdAndUpdate(userId, {
+      $push: { onesignalIdRelationship: nguoi_than[0].onesignalId },
     });
 
     return res

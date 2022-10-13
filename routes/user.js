@@ -103,17 +103,17 @@ Router.post("/doctors", async (req, res) => {
   }
 });
 
-//Them onesignal playerid
-Router.post("/onesignal", verifyToken, async (req, res) => {
-  const userId = req.userId;
-  try {
-    await UserSchema.findByIdAndUpdate(userId, {
-      onesignalId: req.body.onesignalId,
-    });
-    res.status(200).json({success: true, message: 'them thanh cong'})
-  } catch (err) {
-    console.log(err);
-  }
-});
+// //Them onesignal playerid cua nguoi than
+// Router.post("/onesignal", verifyToken, async (req, res) => {
+//   const userId = req.userId;
+//   try {
+//     await UserSchema.findByIdAndUpdate(userId, {
+//       $push: { onesignalIdRelationship: req.body.onesignalIdRelationship },
+//     });
+//     res.status(200).json({success: true, message: 'them thanh cong'})
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
 
 module.exports = Router;
