@@ -33,7 +33,9 @@ Router.post("/update", verifyToken, async (req, res) => {
 
   try {
     const updated = await UserSchema.findByIdAndUpdate(userId, data);
-    res.status(200).json({ success: true, message: "Cập nhật thành công", data: updated });
+    res
+      .status(200)
+      .json({ success: true, message: "Cập nhật thành công", data: updated });
   } catch (err) {
     res
       .status(400)
@@ -74,24 +76,44 @@ Router.get("/health-info", verifyToken, async (req, res) => {
 });
 
 //Lay danh sach bac si theo benh vien
-Router.post('/doctors', async (req, res)=>{
+Router.post("/doctors", async (req, res) => {
   const hospitalName = req.body?.hospitalName;
-  try{  
-    let doctors = await UserSchema.find({role:'doctor', workPlace:hospitalName });
-    if(doctors.length === 0){
-      return res.status(200).json({success: true, message: "Chưa có ai làm bác sĩ cả!!"})
+  try {
+    let doctors = await UserSchema.find({
+      role: "doctor",
+      workPlace: hospitalName,
+    });
+    if (doctors.length === 0) {
+      return res
+        .status(200)
+        .json({ success: true, message: "Chưa có ai làm bác sĩ cả!!" });
     }
 
-    doctors = doctors.map(doctor =>{
-      const {password, ...data} = doctor._doc;
-      return data
-    })
+    doctors = doctors.map((doctor) => {
+      const { password, ...data } = doctor._doc;
+      return data;
+    });
 
-    return res.status(200).json({success: false, data: doctors})
-  }catch(err){
+    return res.status(200).json({ success: false, data: doctors });
+  } catch (err) {
     console.log(err);
-    return res.status(200).json({success: false, message: "Chưa có ai làm bác sĩ cả!!"})
+    return res
+      .status(200)
+      .json({ success: false, message: "Chưa có ai làm bác sĩ cả!!" });
   }
-})
+});
+
+//Them onesignal playerid
+Router.post("/onesignal", verifyToken, async (req, res) => {
+  const userId = req.userId;
+  try {
+    await UserSchema.findByIdAndUpdate(userId, {
+      onesignalId: req.body.onesignalId,
+    });
+    res.status(200).json({success: true, message: 'them thanh cong'})
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 module.exports = Router;
